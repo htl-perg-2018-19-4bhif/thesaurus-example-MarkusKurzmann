@@ -39,13 +39,37 @@ lineReader.on('close', function (line) {
                     for(var j = 0; j < line.length; j++){
 
                         //check if word appears in line
+                        //full match
                         if(line[j] === words[w]){
-
-                            //word appears in line -> save rest of line
                             for(var k = 1; k < line.length; k++){
                                 synonyms[words[w]] += ", " + line[k];
                             }
+                        }else{
+                            //half match
+                            if(line[j].indexOf(words[w]) >= 0){
+                                //word appears in line -> save rest of line
+                                for(var k = 1; k < line.length; k++){
+                                    
+                                    //check if the word is already in words defined
+                                    if(words.indexOf(line[j]) <= 0){
+                                        if(words[line[j]] === undefined){
+                                            words.push(line[j]);
+                                            words[line[j]] = ",";
+                                        }
+                                    }else{
+                                        if(synonyms[line[j]] !== undefined){
+                                            if(synonyms[line[j]].indexOf(line[k]) < 0){
+                                                synonyms[line[j]] += ", " + line[k];
+                                            }else{
+                                                //do nothing
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
                         }
+                        
                     }
                 }
                 
@@ -54,13 +78,17 @@ lineReader.on('close', function (line) {
         for(var i = 0; i < words.length; i++){
             let wordsSplit: string[] = synonyms[words[i]].split(",");
             if(wordsSplit.length > 1){
-                console.log("Found synonyms for '",words[i], "':\n");
+                console.log("Found synonyms for '",words[i], "':");
             
                 for(var j = 0; j < wordsSplit.length; j++){
-                    console.log("\t",wordsSplit[j]);
+                    if(wordsSplit[j] === "undefined" || wordsSplit[j] === null || wordsSplit[j] === ""|| wordsSplit[j] === words[i]){
+                        continue;
+                    }else{
+                        console.log("\t",wordsSplit[j]);
+                    }
                 }
             }else{
-                console.log("No synonyms found");
+                console.log("No synonyms found for '",words[i],"'");
             }
             
         }
