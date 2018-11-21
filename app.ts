@@ -52,11 +52,17 @@ lineReader.on('close', function (line) {
             }
         }
         for(var i = 0; i < words.length; i++){
-            console.log("Found synonyms for '",words[i], "':\n");
             let wordsSplit: string[] = synonyms[words[i]].split(",");
-            for(var j = 0; j < wordsSplit.length; j++){
-                console.log("\t",wordsSplit[j]);
+            if(wordsSplit.length > 1){
+                console.log("Found synonyms for '",words[i], "':\n");
+            
+                for(var j = 0; j < wordsSplit.length; j++){
+                    console.log("\t",wordsSplit[j]);
+                }
+            }else{
+                console.log("No synonyms found");
             }
+            
         }
     }
 });
